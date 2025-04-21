@@ -18,6 +18,7 @@ import net.minecraft.entity.Entity
 import scala.collection.JavaConversions._
 import java.util.{Iterator => JIterator}
 import net.minecraft.block.Block.SoundType
+import codechicken.microblock.handler.MicroblockProxy
 
 object MicroMaterialRegistry {
 
@@ -165,11 +166,13 @@ object MicroMaterialRegistry {
   }
 
   private[microblock] def calcMaxCuttingStrength() {
-    val it = Item.itemRegistry.iterator.asInstanceOf[JIterator[Item]]
-    maxCuttingStrength = it.flatMap {
-      case saw: Saw => Some(saw.getMaxCuttingStrength)
-      case _        => None
-    }.max
+    if (MicroblockProxy.enableSaws) {
+      val it = Item.itemRegistry.iterator.asInstanceOf[JIterator[Item]]
+      maxCuttingStrength = it.flatMap {
+        case saw: Saw => Some(saw.getMaxCuttingStrength)
+        case _        => None
+      }.max
+    }
   }
 
   private[microblock] def loadIcons() {

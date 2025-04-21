@@ -8,6 +8,7 @@ import cpw.mods.fml.relauncher.SideOnly
 import cpw.mods.fml.relauncher.Side
 import net.minecraft.item.crafting.CraftingManager
 import net.minecraft.item.Item
+import net.minecraft.init.Items
 import net.minecraft.item.crafting.IRecipe
 
 import java.util.{List => JList}
@@ -28,15 +29,39 @@ class MicroblockProxy_serverImpl {
   var logger: Logger = _
 
   var itemMicro: ItemMicroPart = _
+  var sawStone: Item = _
+  var sawIron: Item = _
   var sawDiamond: Item = _
+  var stoneRod: Item = _
 
+  var enableSaws: Boolean = _
   var useSawIcons: Boolean = _
 
   def preInit(logger: Logger) {
     this.logger = logger
     itemMicro = new ItemMicroPart
     GameRegistry.registerItem(itemMicro, "microblock")
-    sawDiamond = createSaw(config, "sawDiamond", 3)
+
+    enableSaws = config
+      .getTag("enableSaws")
+      .setComment(
+        "Set to true to enable the saws used to craft microblocks"
+      )
+      .getBooleanValue(false)
+
+    if (enableSaws) {
+      sawStone = createSaw(config, "sawStone", 1)
+      sawIron = createSaw(config, "sawIron", 2)
+      sawDiamond = createSaw(config, "sawDiamond", 3)
+      stoneRod = new Item()
+        .setUnlocalizedName("microblock:stoneRod")
+        .setTextureName("microblock:stoneRod")
+      GameRegistry.registerItem(stoneRod, "stoneRod")
+
+      OreDictionary.registerOre("rodStone", stoneRod)
+    } else {
+      sawDiamond = Items.diamond_axe
+    }
 
     MinecraftForge.EVENT_BUS.register(MicroblockEventHandler)
 
@@ -45,7 +70,7 @@ class MicroblockProxy_serverImpl {
       .setComment(
         "Set to true to use mc style icons for the saw instead of the 3D model"
       )
-      .getBooleanValue(true)
+      .getBooleanValue(false)
   }
 
   protected var saws = mutable.MutableList[Item]()
@@ -77,7 +102,19 @@ class MicroblockProxy_serverImpl {
   }
 
   def init() {
-    if (!Loader.isModLoaded("dreamcraft")) {
+    CraftingManager.getInstance.getRecipeList
+      .asInstanceOf[JList[IRecipe]]
+      .add(MicroRecipe)
+    if (!Loader.isModLoaded("dreamcraft") && enableSaws) {
+      CraftingManager.getInstance.addRecipe(
+        new ItemStack(stoneRod, 4),
+        "s",
+        "s",
+        's': Character,
+        Blocks.stone
+      )
+      addSawRecipe(sawStone, Items.flint)
+      addSawRecipe(sawIron, Items.iron_ingot)
       addSawRecipe(sawDiamond, Items.diamond)
     }
   }

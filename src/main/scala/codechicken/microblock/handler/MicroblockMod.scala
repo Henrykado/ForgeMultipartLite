@@ -9,6 +9,7 @@ import codechicken.microblock.MicroMaterialRegistry
 import codechicken.multipart.Tags
 import cpw.mods.fml.common.event.FMLPostInitializationEvent
 import codechicken.microblock.ConfigContent
+import codechicken.microblock.DefaultContent
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent
 import scala.collection.JavaConversions._
 
