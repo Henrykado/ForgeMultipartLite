@@ -28,10 +28,7 @@ class MicroblockProxy_serverImpl {
   var logger: Logger = _
 
   var itemMicro: ItemMicroPart = _
-  var sawStone: Item = _
-  var sawIron: Item = _
   var sawDiamond: Item = _
-  var stoneRod: Item = _
 
   var useSawIcons: Boolean = _
 
@@ -39,15 +36,8 @@ class MicroblockProxy_serverImpl {
     this.logger = logger
     itemMicro = new ItemMicroPart
     GameRegistry.registerItem(itemMicro, "microblock")
-    sawStone = createSaw(config, "sawStone", 1)
-    sawIron = createSaw(config, "sawIron", 2)
     sawDiamond = createSaw(config, "sawDiamond", 3)
-    stoneRod = new Item()
-      .setUnlocalizedName("microblock:stoneRod")
-      .setTextureName("microblock:stoneRod")
-    GameRegistry.registerItem(stoneRod, "stoneRod")
 
-    OreDictionary.registerOre("rodStone", stoneRod)
     MinecraftForge.EVENT_BUS.register(MicroblockEventHandler)
 
     useSawIcons = config
@@ -55,7 +45,7 @@ class MicroblockProxy_serverImpl {
       .setComment(
         "Set to true to use mc style icons for the saw instead of the 3D model"
       )
-      .getBooleanValue(false)
+      .getBooleanValue(true)
   }
 
   protected var saws = mutable.MutableList[Item]()
@@ -87,19 +77,7 @@ class MicroblockProxy_serverImpl {
   }
 
   def init() {
-    CraftingManager.getInstance.getRecipeList
-      .asInstanceOf[JList[IRecipe]]
-      .add(MicroRecipe)
     if (!Loader.isModLoaded("dreamcraft")) {
-      CraftingManager.getInstance.addRecipe(
-        new ItemStack(stoneRod, 4),
-        "s",
-        "s",
-        's': Character,
-        Blocks.stone
-      )
-      addSawRecipe(sawStone, Items.flint)
-      addSawRecipe(sawIron, Items.iron_ingot)
       addSawRecipe(sawDiamond, Items.diamond)
     }
   }
