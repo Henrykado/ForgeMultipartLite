@@ -3,7 +3,7 @@ package codechicken.microblock
 import net.minecraft.init.Blocks._
 import BlockMicroMaterial._
 import MicroMaterialRegistry._
-import codechicken.multipart.handler.MultipartProxy
+import codechicken.microblock.handler.MicroblockProxy
 
 object DefaultContent {
   var registerDefaultContent: Boolean = _
@@ -15,14 +15,7 @@ object DefaultContent {
     EdgeMicroClass.register(3)
     PostMicroClass.register()
 
-    registerDefaultContent = MultipartProxy.config
-      .getTag("registerDefaultContent")
-      .setComment(
-        "Set to true to register the default microblocks, including microblocks of most vanilla blocks"
-      )
-      .getBooleanValue(false)
-
-    if (registerDefaultContent) {
+    if (MicroblockProxy.registerDefaultContent) {
       createAndRegister(stone)
       createAndRegister(dirt, 0 to 2)
       createAndRegister(cobblestone)

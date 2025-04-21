@@ -36,6 +36,7 @@ class MicroblockProxy_serverImpl {
 
   var enableSaws: Boolean = _
   var useSawIcons: Boolean = _
+  var registerDefaultContent: Boolean = _
 
   def preInit(logger: Logger) {
     this.logger = logger
@@ -71,6 +72,13 @@ class MicroblockProxy_serverImpl {
         "Set to true to use mc style icons for the saw instead of the 3D model"
       )
       .getBooleanValue(false)
+
+    registerDefaultContent = config
+      .getTag("registerDefaultContent")
+      .setComment(
+        "Set to true to register the default microblocks, including microblocks of most vanilla blocks. Uncraftable without saws enabled"
+      )
+      .getBooleanValue(false)
   }
 
   protected var saws = mutable.MutableList[Item]()
@@ -102,9 +110,11 @@ class MicroblockProxy_serverImpl {
   }
 
   def init() {
-    CraftingManager.getInstance.getRecipeList
-      .asInstanceOf[JList[IRecipe]]
-      .add(MicroRecipe)
+    if (enableSaws) {
+      CraftingManager.getInstance.getRecipeList
+        .asInstanceOf[JList[IRecipe]]
+        .add(MicroRecipe)
+    }
     if (!Loader.isModLoaded("dreamcraft") && enableSaws) {
       CraftingManager.getInstance.addRecipe(
         new ItemStack(stoneRod, 4),

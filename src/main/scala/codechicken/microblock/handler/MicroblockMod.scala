@@ -6,6 +6,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent
 import cpw.mods.fml.common.Mod.EventHandler
 import cpw.mods.fml.common.event.FMLServerAboutToStartEvent
 import codechicken.microblock.MicroMaterialRegistry
+import codechicken.microblock.DefaultContent
 import codechicken.multipart.Tags
 import cpw.mods.fml.common.event.FMLPostInitializationEvent
 import codechicken.microblock.ConfigContent
@@ -31,6 +32,7 @@ object MicroblockMod {
   @EventHandler
   def init(event: FMLInitializationEvent) {
     MicroblockProxy.init()
+    DefaultContent.load()
     ConfigContent.load()
   }
 
