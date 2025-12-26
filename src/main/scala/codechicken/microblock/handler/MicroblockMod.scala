@@ -32,8 +32,6 @@ object MicroblockMod {
   @EventHandler
   def init(event: FMLInitializationEvent) {
     MicroblockProxy.init()
-    DefaultContent.load()
-    ConfigContent.load()
   }
 
   @EventHandler
